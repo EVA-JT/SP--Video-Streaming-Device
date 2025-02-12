@@ -216,6 +216,17 @@ class Profile:
         self.bookmarks = []
         self.watch_history = []
 
+class Watchable:
+    def __init__(self, name, category, genre, sinopsis, year, rating, reviews):
+        self.name = name
+        self.category = category
+        self.genre = genre
+        self.sinopsis = sinopsis
+        self.rating = rating
+        self.reviews = reviews
+
+    
+
 
 # ----
 main = Program()
