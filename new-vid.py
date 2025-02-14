@@ -1,7 +1,7 @@
 import os
 import random
 
-from new_data import *
+from data import *
 
 user_data = {}
 catalog_movie = {}
