@@ -1,7 +1,7 @@
 import os
 import random
 
-from data import *
+from new_data import *
 
 user_data = {}
 catalog_movie = {}
@@ -265,18 +265,6 @@ class Item:
             setattr(self, key, dictionary[key])
 
 class Watchable(Item):
-    def show_details(self):
-        os.system('cls')
-
-        rating = rating_list[self.rating]
-        print(f"Title: {self.name}\nSinopsis: {self.description}\nYear: {self.year}\nRating: {rating}\n")
-        opt = int(input("1 - Watch 2 - Bookmark it 3 - Bandwidth settings 4 - Show reviews 5 - Exit "))
-
-        if opt == 1:
-            self.watch()
-        elif opt == 2:
-            self.bookmark()
-
     def watch(self):
         if main.logged_user.profile_choosen.bandwidth == "":
             while True:
@@ -338,7 +326,7 @@ class Watchable(Item):
             rating = rating_list[self.rating]
 
             print(f"Title: {self.name}\nSinopsis: {self.description}\nYear: {self.year}\nRating: {rating}\n")
-            opt = int(input("1 - Watch 2 - Bookmark it 3 - Bandwidth settings 4 - Show reviews 5 - Exit\n"))
+            opt = int(input("1 - Watch 2 - Bookmark it 3 - Bandwidth settings 4 - Reviews 5 - Exit\n"))
 
             if opt == 1:
                 self.watch()
