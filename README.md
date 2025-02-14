@@ -58,3 +58,13 @@ Imprime o titulo, descrição, ano de lançamento e classificação indicativa d
 
 # 7 - Ad
 W.I.P
+
+
+# TO DO:
+### 1
+- Implementar a função de catálogo logo.
+- Inclui decidir usar ou não uma classe e/ou refazer data.py
+### 2
+- Implementar as propagandas.
+### 3
+- Polir e debugar.
