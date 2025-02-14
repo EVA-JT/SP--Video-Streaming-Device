@@ -1,9 +1,11 @@
 import os
 import random
 
-from data import *
+from new_data import *
 
 user_data = {}
+catalog_movie = {}
+catalog_shows = {}
 
 class Program:
     def __init__(self):
@@ -66,12 +68,10 @@ class Program:
                 self.logged_user.change_payment_plan()
             elif opt == 4:
                 user_data.pop(self.logged_user.email)
-                logged_user = None
+                self.logged_user = None
                 failsafe = 0
 
             return failsafe
-
-
 
 class User_Account:
     def __init__(self,email,password,payment_plan):
@@ -201,8 +201,7 @@ class User_Account:
         else:
             self.payment_plan = opt
             input("Payment plan changed successfully. Press enter to continue")
-
-    
+   
 class Profile:
     def __init__(self, first_name, last_name, age, cat_preference, gen_preference, parental_controls):
         self.first_name = first_name
@@ -216,20 +215,160 @@ class Profile:
         self.bookmarks = []
         self.watch_history = []
 
-class Watchable:
-    def __init__(self, name, category, genre, sinopsis, year, rating, reviews):
-        self.name = name
-        self.category = category
-        self.genre = genre
-        self.sinopsis = sinopsis
-        self.rating = rating
-        self.reviews = reviews
+    def bandwidth_settings(self):
+        if self.bandwidth == "":
+            print("You haven't chosen your preferred quality.")
+        else:
+            print(f"Your current choosen quality is: {self.bandwidth}")
+        
+        while True:
+            b_w = input("In what quality do you want to watch, 'Low', 'Medium' or 'High'? (We recommend 'High' for your bandwidth)\nType 'exit' to cancel.\n").lower()
 
+            if b_w == "exit":
+                break
+            elif b_w in quality_list:
+                self.bandwidth = b_w
+                input(f"Your preferred quality is now {b_w}. Press enter to continue")
     
+    def bookmarks_or_watch_history_page(self, option):
+        os.system('cls')
+        choice = None
+
+        if option == "bookmarks":
+            choice = self.bookmarks
+        else:
+            choice = self.watch_history
+
+        if len(choice) == 0:
+            input(f"There are no items. Press enter to exit.")
+        else:
+            bm_list = []
+            i = 1
+
+            for item in choice:
+                print(f"{i} - Title: {item.name}, Genre: {item.genre}")
+                bm_list.append(item)
+                i += 1
+
+            opt = int(input("Enter wich item you want to watch (enter 0 to exit): "))
+            if opt != 0:
+                bm_list[opt - 1].watch()
+
+class Catalog:
+    def __init__(self, item):
+        pass
+
+class Item:
+    def __init__(self, name, dictionary):
+        self.name = name
+        for key in dictionary: 
+            setattr(self, key, dictionary[key])
+
+class Watchable(Item):
+    def show_details(self):
+        os.system('cls')
+
+        rating = rating_list[self.rating]
+        print(f"Title: {self.name}\nSinopsis: {self.description}\nYear: {self.year}\nRating: {rating}\n")
+        opt = int(input("1 - Watch 2 - Bookmark it 3 - Bandwidth settings 4 - Show reviews 5 - Exit "))
+
+        if opt == 1:
+            self.watch()
+        elif opt == 2:
+            self.bookmark()
+
+    def watch(self):
+        if main.logged_user.profile_choosen.bandwidth == "":
+            while True:
+                b_w = input("In what quality do you want to watch, 'Low', 'Medium' or 'High'? (We recommend 'High' for your bandwidth)\n").lower()
+
+                if b_w in quality_list:
+                    main.logged_user.profile_choosen.bandwidth = b_w
+                    break
+                else:
+                    input("Error. Press enter to try again")
+        
+        main.logged_user.profile_choosen.watch_history.append(self)
+
+        print("\n")
+        #show_ad()
+        input(f"You've just watched {self.name} in {main.logged_user.profile_choosen.bandwidth} quality. Press enter to continue")
+    
+    def bookmark(self):
+        main.logged_user.profile_choosen.bookmarks.append(self)
+        input(f"{self.name} has just been added to your bookmarks. Press enter to continue.")
+
+    def print_reviews(self):
+        reviews_dict = self.reviews
+        reviews_total = 0
+        scores_sum = 0
+        scores_total = 0
+
+        for reviwer in reviews_dict:
+            if reviews_dict[reviwer]['review'] != "":
+                print(f"{reviwer} : {reviews_dict[reviwer]['review']}")
+                reviews_total += 1
+            scores_sum += reviews_dict[reviwer]['score']
+            scores_total += 1
+        
+        if scores_total != 0:
+            print(f"The current score is: {scores_sum / scores_total}")
+        else:
+            print("There is no score at the moment.")
+        
+        if reviews_total == 0:
+            print("There are no reviews at the moment")
+
+    def review_page(self):
+        reviews_dict = self.reviews
+
+        score = int(input(f"What would you rate {self.name} out of 10?\n"))
+        review = str(input("Write your review: "))
+
+        reviews_dict[main.logged_user.profile_choosen.first_name] = {
+            "score": score,
+            "review": review
+        }
+
+        input("Your review has been saved. Press enter to continue.")
+
+    def show_details(self):
+        while True:
+            os.system('cls')
+            rating = rating_list[self.rating]
+
+            print(f"Title: {self.name}\nSinopsis: {self.description}\nYear: {self.year}\nRating: {rating}\n")
+            opt = int(input("1 - Watch 2 - Bookmark it 3 - Bandwidth settings 4 - Show reviews 5 - Exit\n"))
+
+            if opt == 1:
+                self.watch()
+            elif opt == 2:
+                self.bookmark()
+            elif opt == 3:
+                main.logged_user.profile_choosen.bandwidth_settings()
+            elif opt == 4:
+                while True:
+                    user_choice = int(input("Would you like to:\n1 - Leave a review 2 - See the current score and reviews 3 - Exit\n"))
+                    if user_choice == 1:
+                        self.review_page()
+                    elif user_choice == 2:
+                        self.print_reviews()
+            else:
+                break
+
+class Ad(Item):
+    pass
+
+def add_item():
+    for key in movie_catalog:
+        item = Watchable(key, movie_catalog[key])
+        catalog_movie[key] = item
+    for key in show_catalog:
+        item = Watchable(key, show_catalog[key])
+        catalog_shows[key] = item
 
 
 # ----
-main = Program()
 
 def login_menu():
     while True:
@@ -274,6 +413,24 @@ def initial_menu():
                     break
 
 def main_menu():
-    print("W.I.P")
+    while True:
+        user = main.logged_user
+        os.system('cls')
+        print(f"Hello, {user.profile_choosen.first_name}, what will you watch today?")
+        opt = int(input("Browse by:\n1 - Recommendations based on your preferences 2 - Category 3 - Genre 4 - Bookmarks 5 - Watch History 6 - Exit\n"))
 
+        if opt == 1:
+            pass
+        elif opt == 2:
+            pass
+        elif opt == 3:
+            pass
+        elif opt == 4:
+            user.profile_choosen.bookmarks_or_watch_history_page("bookmarks")
+        elif opt == 5:
+            user.profile_choosen.bookmarks_or_watch_history_page("history")
+        elif opt == 6:
+            break
+
+main = Program()
 login_menu()
