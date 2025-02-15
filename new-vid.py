@@ -253,7 +253,6 @@ class Profile:
             if opt != 0:
                 bm_list[opt - 1].show_details()
 
-
 class Catalog:
     def __init__(self, catalog_name, item_dict):
         self.catalog_name = catalog_name
@@ -267,7 +266,7 @@ class Catalog:
             self.catalog_dict[item.genre][key] = item
 
     def show_catalog(self, genres, i, items):
-
+        profile = main.logged_user.profile_choosen
         if isinstance(genres, str): #se 'genre' for uma string, transforma ela em uma lista
             genres = [genres]
         
@@ -278,10 +277,10 @@ class Catalog:
             print(f"\n{genre_key.title()}")
 
             for item in self.catalog_dict[genre_key]:
-                print(f"{i} - {item} | ", end ='')
-                i += 1
-                items.append(self.catalog_dict[genre_key][item])
-
+                if profile.parental_controls is False or self.catalog_dict[genre_key][item].rating <= profile.age:
+                    print(f"{i} - {item} | ", end ='')
+                    i += 1
+                    items.append(self.catalog_dict[genre_key][item])
             print()
         return i
 
@@ -372,7 +371,10 @@ class Watchable(Item):
                 break
 
 class Ad(Item):
-    pass
+    def show_random_ad(self):
+        random_ad_key = random.choice(list(self.banner.keys()))
+        print(f"\nProduct placement: {random_ad_key}: {self.banner[random_ad_key]}")
+        pass
 
 # ----
 
@@ -382,9 +384,14 @@ def choice_catalog(category, genres):
     items = []
     if category == "movies" or category == "all":
         i = movie_catalog.show_catalog(genres, 1, items)
+    
+    ads.show_random_ad()
+
     if category == "shows" or category == "all":
         i += shows_catalog.show_catalog(genres, i, items)
 
+    ads.show_random_ad()
+    
     opt = int(input(f"\nEnter the number of wich item you want to watch (or enter '0' to exit).\n"))
     if opt == 0:
         return
@@ -495,4 +502,6 @@ def main_menu():
 main = Program()
 movie_catalog = Catalog("movie", movie_catalog)
 shows_catalog = Catalog("show", show_catalog)
+ads = Ad("ad", ad)
+
 login_menu()
