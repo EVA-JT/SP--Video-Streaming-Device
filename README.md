@@ -37,13 +37,16 @@ Faz a troca da qualidade da banda larga do usuário
 Tem como parametro 'options' para mostrar ou os itens salvos ou o histórico
 
 # 4 - Catalog
-W.I.P
+Usado para criar um catalogo de filmes e de séries, usando os dicionarios de new_data.
+## Métodos:
+### show_catalog()
+Imprime o catálogo seguindo o argumento genre para o(s) gênero(s) escolhido.
 
 # 5 - Item
 Cria um objeto a partir de um dicionario, as chaves serão o nome da informação (self.key = dictionary[key]). É usado na criação de objetos para o catálogo.
 
 # 6 - Watchable
-Cria um objeto para algo "assistivel" a usando a herança da classe Item.
+Cria um objeto para algo "assistivel" usando a herança da classe Item.
 ## Métodos:
 ### watch()
 Permite o usuario "assistir" o item. Se ele não tiver uma escolha de qualidade, ele poderá escolher também.
@@ -59,12 +62,22 @@ Imprime o titulo, descrição, ano de lançamento e classificação indicativa d
 # 7 - Ad
 W.I.P
 
+# 8 - Funções soltas
+## choice_catalog()
+Chama o show_catalog() do(s) catalogo(s) especificado(s) por category.
+## recommendations_page()
+Puxa as informações do perfil de categoria e gênero escolhido para mandar para show_catalog().
+## category_page()
+Pede para o usuario a categoria para show_catalog()
+## genre_page()
+Pede para o usuario o gênero para show_catalog()
+## login_menu()
+Menu de criação e login de usuario.
+## initial_menu()
+Menu de criação, configuração e uso de perfil.
+## main_menu()
+Menu para o usuario escolher qual catálogo.
 
 # TO DO:
-### 1
-- Implementar a função de catálogo logo.
-- Inclui decidir usar ou não uma classe e/ou refazer data.py
-### 2
-- Implementar as propagandas.
-### 3
+- Implementar a função de propagandas e filtragem de controle parental.
 - Polir e debugar.
