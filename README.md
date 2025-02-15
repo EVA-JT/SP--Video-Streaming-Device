@@ -60,7 +60,10 @@ Permite o usuario escrever uma review para o item e dar uma nota. Cria um dicion
 Imprime o titulo, descrição, ano de lançamento e classificação indicativa do item e dá a escolha para o usuario assistir, salvar, configurar a qualidade e ver se quer olhar ou escrever uma review.
 
 # 7 - Ad
-W.I.P
+Classe de propaganda usando herança da classe Item
+## Métodos
+### show_random_ad()
+Escolhe uma propaganda aleatória (somente dos banners) e imprime entre as categorias do catalogo.
 
 # 8 - Funções soltas
 ## choice_catalog()
@@ -79,5 +82,4 @@ Menu de criação, configuração e uso de perfil.
 Menu para o usuario escolher qual catálogo.
 
 # TO DO:
-- Implementar a função de propagandas e filtragem de controle parental.
 - Polir e debugar.
