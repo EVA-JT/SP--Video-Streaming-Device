@@ -1,6 +1,7 @@
 quality_list = ["low", "medium", "high"]
 
 genres_list = ["action", "comedy", "romance"]
+categories_list = ["movies", "shows"]
 
 rating_list = {
     0:"All ages",
