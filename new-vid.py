@@ -4,8 +4,6 @@ import random
 from new_data import *
 
 user_data = {}
-catalog_movie = {}
-catalog_shows = {}
 
 class Program:
     def __init__(self):
@@ -229,6 +227,7 @@ class Profile:
             elif b_w in quality_list:
                 self.bandwidth = b_w
                 input(f"Your preferred quality is now {b_w}. Press enter to continue")
+                break
     
     def bookmarks_or_watch_history_page(self, option):
         os.system('cls')
@@ -252,11 +251,39 @@ class Profile:
 
             opt = int(input("Enter wich item you want to watch (enter 0 to exit): "))
             if opt != 0:
-                bm_list[opt - 1].watch()
+                bm_list[opt - 1].show_details()
+
 
 class Catalog:
-    def __init__(self, item):
-        pass
+    def __init__(self, catalog_name, item_dict):
+        self.catalog_name = catalog_name
+        self.catalog_dict = {}
+
+        for genre in genres_list:
+            self.catalog_dict[genre] = {}
+        
+        for key in item_dict:
+            item = Watchable(key, item_dict[key])
+            self.catalog_dict[item.genre][key] = item
+
+    def show_catalog(self, genres, i, items):
+
+        if isinstance(genres, str): #se 'genre' for uma string, transforma ela em uma lista
+            genres = [genres]
+        
+        print(f"\n\t\t\t{self.catalog_name.title()}")
+
+        for genre_key in genres:
+
+            print(f"\n{genre_key.title()}")
+
+            for item in self.catalog_dict[genre_key]:
+                print(f"{i} - {item} | ", end ='')
+                i += 1
+                items.append(self.catalog_dict[genre_key][item])
+
+            print()
+        return i
 
 class Item:
     def __init__(self, name, dictionary):
@@ -347,17 +374,63 @@ class Watchable(Item):
 class Ad(Item):
     pass
 
-def add_item():
-    for key in movie_catalog:
-        item = Watchable(key, movie_catalog[key])
-        catalog_movie[key] = item
-    for key in show_catalog:
-        item = Watchable(key, show_catalog[key])
-        catalog_shows[key] = item
-
-
 # ----
 
+def choice_catalog(category, genres):
+    os.system('cls')
+    i = 0
+    items = []
+    if category == "movies" or category == "all":
+        i = movie_catalog.show_catalog(genres, 1, items)
+    if category == "shows" or category == "all":
+        i += shows_catalog.show_catalog(genres, i, items)
+
+    opt = int(input(f"\nEnter the number of wich item you want to watch (or enter '0' to exit).\n"))
+    if opt == 0:
+        return
+    else:
+        items[opt - 1].show_details()
+
+def recommendations_page():
+    profile = main.logged_user.profile_choosen
+
+    genres = profile.genre_preference
+    categories = profile.category_preference
+
+    choice_catalog(categories, genres)
+
+def category_page():
+    while True:
+        os.system('cls')
+        print("Choose a category to browse on or type 'exit' to cancel.")
+
+        opt = str(input("'Movies', 'Shows' or 'All'\n").lower())
+
+        if opt == "exit":
+            break
+
+        elif opt in categories_list or opt == "all":
+            choice_catalog(opt, genres_list)
+
+        else:
+            input("This category is not availabe, press enter to try again")
+
+def genre_page():
+    while True:
+        os.system('cls')
+        print("Enter the genre to browse on or type 'exit' to cancel.")
+
+        for i in range(len(genres_list)):
+            print(f"{genres_list[i].title()} | ", end='')
+
+        opt = str(input("\n").lower())
+        if opt == "exit":
+            break
+        elif opt in genres_list:
+            choice_catalog("all", opt)
+        else:
+            input("This genre is not availabe, press enter to try again")
+    
 def login_menu():
     while True:
         os.system('cls')
@@ -395,30 +468,31 @@ def initial_menu():
                 if res == 0:
                     return               
             elif option == 5:
-                print("Are you sure you want to log out? Y/N")
-                assurance = str(input("Are you sure you want to log out? Y/N").lower())
+                assurance = str(input("Are you sure you want to log out? Y/N\n").lower())
                 if assurance == "y":
                     break
 
 def main_menu():
     while True:
-        user = main.logged_user
+        profile = main.logged_user.profile_choosen
         os.system('cls')
-        print(f"Hello, {user.profile_choosen.first_name}, what will you watch today?")
+        print(f"Hello, {profile.first_name}, what will you watch today?")
         opt = int(input("Browse by:\n1 - Recommendations based on your preferences 2 - Category 3 - Genre 4 - Bookmarks 5 - Watch History 6 - Exit\n"))
 
         if opt == 1:
-            pass
+            recommendations_page()
         elif opt == 2:
-            pass
+            category_page()
         elif opt == 3:
-            pass
+            genre_page()
         elif opt == 4:
-            user.profile_choosen.bookmarks_or_watch_history_page("bookmarks")
+            profile.bookmarks_or_watch_history_page("bookmarks")
         elif opt == 5:
-            user.profile_choosen.bookmarks_or_watch_history_page("history")
+            profile.bookmarks_or_watch_history_page("history")
         elif opt == 6:
             break
 
 main = Program()
+movie_catalog = Catalog("movie", movie_catalog)
+shows_catalog = Catalog("show", show_catalog)
 login_menu()
