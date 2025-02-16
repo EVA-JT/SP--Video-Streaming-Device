@@ -13,8 +13,8 @@ Uma pagina de configurações da conta do usuario, usa métodos de User_Account 
 # 2 -  User:
 Cria a conta principal do usuario, armazenando senha, email, plano de pagamento e as informações de perfis que serão adicionadas depois
 ## Métodos:
-### print_user_profile()
-Imprime todos os perfis associados com a conta do usuario
+### profile_choice()
+Imprime todos os perfis associados com a conta do usuario e dá o prompt para a escolha, usando o parâmetro ele ou usa o perfil ou o deleta.
 ### choose_user_profile()
 Usa a print_user_profile para mostrar os perfis ao usuario e o permitir escolher qual ele quer usar, o escolhido ficara em profile_choosen.
 ### delete_user_profile()
