@@ -1,85 +1,165 @@
 # Classes:
 
 # 1 - Program
-Classe principal do programa, guarda o usuario logado nas informações.
+Classe principal do programa. Cuida do usuario logado e de certas páginas relacionadas ao catálogo.
+
+`logged_user`: Usuario (`User`) logado no momento.
+
+`system`: Sistema do usuario.
+
+`clear_type`: Qual comando deve ser usado para limpar a tela.
+
 ## Métodos
 ### create_user()
-Dá os prompts para o usuario criar uma conta, e a salva em user_data (variavel global)
+Cria um usuario (`User`) a partir do email, senha e plano de pagamento escolhido.
 ### user_login()
-Dá os promps para o usuario logar, se ele conseguir o user fica salvo em logged_user.
+Pagina de login do usuario. Define o `User` que ficará salvo em `logged_user`.
 ### user_management()
-Uma pagina de configurações da conta do usuario, usa métodos de User_Account para mudar as informações da conta.
+Página de configurações da conta do usuario. Pode mudar o email, senha, plano de pagamento e até deletar a conta.
+### clear_screen()
+Limpa a tela usando o comando `clear_type` salvo no objeto.
+### choice_catalog(category:str, genres)
+Define qual e como um catálogo será imprimido. Ao final dá o prompt de escolha do item para o usuário e chama o `show_details()` do item escolhido.
+### genre_page()
+Dá um prompt para o usuário escolher um genêro para imprimir todos os catálogos seguindo ele.
+### recommendations_page()
+Usa as informações do perfil escolhido para imprimir o(s) catálogo(s) seguindo elas e usando `choice_catalog()`.
+### category_page()
+Dá um prompt para o usuário escolher uma categoria de catálogo para ser impresso.
 
 # 2 -  User:
-Cria a conta principal do usuario, armazenando senha, email, plano de pagamento e as informações de perfis que serão adicionadas depois
+Classe da conta do usuário. Lida com o perfil escolhido e troca das informações como email e senha.
+
+`email`: Email salvo do usuário
+
+`password`: Senha salva do usuário
+
+`payment_plan`: Plano de pagamento salvo.
+
+`profile_list`: Lista de perfis criados.
+
+`choosen_profile`: Perfil (`Profile`) escolhido.
+
 ## Métodos:
-### profile_choice()
-Imprime todos os perfis associados com a conta do usuario e dá o prompt para a escolha, usando o parâmetro ele ou usa o perfil ou o deleta.
+### profile_choice(option:str))
+Printa os perfis criados, os enumera para a escolha e retorna a escolha do usuário.
 ### choose_user_profile()
-Usa a print_user_profile para mostrar os perfis ao usuario e o permitir escolher qual ele quer usar, o escolhido ficara em profile_choosen.
+Página de escolha de perfil. Determina o `profile_choosen`.
 ### delete_user_profile()
-Usa o print_user_profile para mostrar os perfis ao usuario e o permitir escolher qual ele quer deletar.
+Página para apagar um perfil.
 ### create_user_profile()
 Dá os prompts para o usuario criar um perfil com a classe Profile, que ficará salvo na profile_list
 ### change_email()
-Dá o prompt para a troca do email nas informações
+Efetua o prompt e a troca de emails.
 ### change_password()
-Dá o prompt para a troca da senha nas informações
+Efetua o prompt e a troca da senha.
 ### change_payment_plan()
-Dá o prompt para a troca da senha nas informações.
+Efetua o prompt e a troca do plano de pagamento.
 
 # 3 - Profile
-Cria um perfil para uma conta do usuario, armazenando informações como nome, idade, preferencias e etc.
+Classe de perfil. Segura informações como prefrências e histórico.
+
+`first_name`: Primeiro nome.
+
+`last_name`: Sobrenome.
+
+`age`: Idade.
+
+`category_preference`: Categoria(s) preferida(s).
+
+`genre_preference`: Lista de genêro(s) preferido(s).
+
+`parental_controls`: Vê se os controles parentais estão ligados ou não.
+
+`bandwidth`: Qualidade escolhida de banda larga.
+
+`bookmarks`: Lista de itens salvos.
+
+`watch_history`: Lista de itens assistidos.
+
 ## Métodos:
 ### bandwidth_settings
-Faz a troca da qualidade da banda larga do usuário
-### bookmarks_or_watch_history_page (nome a ser mudado)
-Tem como parametro 'options' para mostrar ou os itens salvos ou o histórico
+Página de configuração da banda larga.
+### bookmarks_or_watch_history_page(option:str) <- nome a ser mudado
+Lista os itens dos itens salvos ou histórico, dependendo de `option`
+
+`option`: A página escolhida para ser mostrada, "bookmarks" ou "watch_history". (Provavelmente deveria deixar de usar strings pra isso)
 
 # 4 - Catalog
-Usado para criar um catalogo de filmes e de séries, usando os dicionarios de new_data.
+Classe de catálogo, armazena os itens de maneira similar a como eles estão em data.py.
+
+`catalog_name`: Nome do catálogo (show ou movie)
+
+`catalog_dict`: Dicionário onde será armazenados os itens. Serão armazenados na chave do genêro e suas informações na chave do seu nome.
 ## Métodos:
 ### show_catalog()
-Imprime o catálogo seguindo o argumento genre para o(s) gênero(s) escolhido.
+Imprime o catálogo usando o(s) genêro(s) como parâmetro.
+
+`genres`: Lista ou string (rever isso aqui) de genêros escolhidos.
+
+`i`: Iterador para a escolha do item.
+
+`items`: Lista de `Watchable` a serem salvos para a escolha.
+        
+`return`: Retorna o iterador `i`
 
 # 5 - Item
-Cria um objeto a partir de um dicionario, as chaves serão o nome da informação (self.key = dictionary[key]). É usado na criação de objetos para o catálogo.
+Usa data.py para criar um item. Feito para ser herdado.
 
 # 6 - Watchable
-Cria um objeto para algo "assistivel" usando a herança da classe Item.
+Classe de itens "assistiveis", usa `Item` em herança para escanear os catálogos em data.py.
+
+A seguir são os itens que **devem** estar no objeto.
+
+`name`: Nome do filme/show.
+
+`category`: Categoria do item (filme ou show).
+
+`genre`: Genêro do item.
+
+`description`: Descrição ou sinopse.
+
+`year`: Ano de lançamento do item (será que eu devia mudar para int?)
+
+`rating`: Classificação indicativa.
+
+`reviews`: Dicionário com dicionários de informações das reviews.
+
 ## Métodos:
 ### watch()
-Permite o usuario "assistir" o item. Se ele não tiver uma escolha de qualidade, ele poderá escolher também.
+"Assiste" o item e o salva no perfil do usuário.
 ### bookmark()
-Salva o item no perfil escolhido.
+Salva o item em `bookmarks` no perfil.
 ### print_reviews()
-Imprime as reviews salvas no item e mostra a média de notas dadas.
+Imprime as reviews salvas no dicionário do item e a nota média.
 ### review_page()
-Permite o usuario escrever uma review para o item e dar uma nota. Cria um dicionario com as duas informações (usando o nome do perfil como chave) e salva no item.
+Página para o usuário escrever sua review. Salva ela no dicionário `reviews` do item.
 ### show_details()
-Imprime o titulo, descrição, ano de lançamento e classificação indicativa do item e dá a escolha para o usuario assistir, salvar, configurar a qualidade e ver se quer olhar ou escrever uma review.
+Mostra as opções do item, como assistir ou salva-lo e seus detalhes.
 
 # 7 - Ad
-Classe de propaganda usando herança da classe Item
+Classe de propagandas, usa `Item` como herança.
+
+Os dados das propagandas ainda são um W.I.P, porém *no momento* eles **devem** ser assim:
+
+`name`: Nome do catálogo (no caso, ad)
+
+`banner`: Dicionário com as informações das propagandas em banner.
+
+`placement`: Dicionário com as informações das propagandas de "lugar" (no catálogo ou comercial no filme/show).
+
 ## Métodos
 ### show_random_ad()
-Escolhe uma propaganda aleatória (somente dos banners) e imprime entre as categorias do catalogo.
+Pega um banner aleatório para imprimi-lo.
 
 # 8 - Funções soltas
-## choice_catalog()
-Chama o show_catalog() do(s) catalogo(s) especificado(s) por category.
-## recommendations_page()
-Puxa as informações do perfil de categoria e gênero escolhido para mandar para show_catalog().
-## category_page()
-Pede para o usuario a categoria para show_catalog()
-## genre_page()
-Pede para o usuario o gênero para show_catalog()
 ## login_menu()
-Menu de criação e login de usuario.
+Primeiro menu do programa. O usuário pode logar ou criar uma conta aqui.
 ## initial_menu()
-Menu de criação, configuração e uso de perfil.
+Segundo menu do programa. Aqui o usuário pode criar, escolher ou deletar um perfil e configurar sua conta.
 ## main_menu()
-Menu para o usuario escolher qual catálogo.
+Terceiro menu do programa. Aqui pode ser escolhido como o usuário ira ver o(s) catálogo(s).
 
 # TO DO:
 - Polir e debugar.
+- Talvez adicionar uma classe Catalog**s**
