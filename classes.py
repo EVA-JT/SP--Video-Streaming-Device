@@ -27,7 +27,6 @@ class Program:
         """
         Cria um usuario (objeto) a partir do email, senha e plano de pagamento escolhido.
         """
-
         email = str(input("Enter your email: "))
         while email in user_data:
             email = str(input("This email has already been registered.\nEnter another email: "))
@@ -100,9 +99,84 @@ class Program:
         
     def clear_screen(self):
         """
-        Limpa a tela usando o comando :var:`clear_type`.
+        Limpa a tela usando o comando :var:`clear_type` salvo no objeto.
         """
         os.system(self.clear_type)
+
+    def choice_catalog(self, category:str, genres):
+        """
+        Define qual e como um catálogo será imprimido. Ao final dá o prompt de escolha do item para o usuário e chama o :meth:`show_details()` do item escolhido.
+
+        :param str category: Categoria do catálogo, pode ser "movies", "shows" ou "all".
+        :param genre: Lista ou string (rever isso aqui) de genêros escolhidos.
+        """
+        self.clear_screen()
+        i = 0
+        items = []
+        if category == "movies" or category == "all":
+            i = movie_catalog.show_catalog(genres, 1, items)
+    
+        ads.show_random_ad()
+
+        if category == "shows" or category == "all":
+            i += shows_catalog.show_catalog(genres, i, items)
+
+        ads.show_random_ad()
+    
+        opt = int(input(f"\nEnter the number of wich item you want to watch (or enter '0' to exit).\n"))
+        if opt == 0:
+            return
+        else:
+            items[opt - 1].show_details()
+
+    def genre_page(self):
+        """
+        Dá um prompt para o usuário escolher um genêro para imprimir todos os catálogos seguindo ele.
+        """
+        while True:
+            self.clear_screen()
+            print("Enter the genre to browse on or type 'exit' to cancel.")
+
+            for i in range(len(genres_list)):
+                print(f"{genres_list[i].title()} | ", end='')
+
+            opt = str(input("\n").lower())
+            if opt == "exit":
+                break
+            elif opt in genres_list:
+                self.choice_catalog("all", opt)
+            else:
+                input("This genre is not availabe, press enter to try again")
+    
+    def recommendations_page(self):
+        """
+        Usa as informações do perfil escolhido para imprimir o(s) catálogo(s) seguindo elas e usando :meth:`choice_catalog()`.
+        """
+        profile = self.logged_user.profile_choosen
+
+        genres = profile.genre_preference
+        categories = profile.category_preference
+
+        self.choice_catalog(categories, genres)
+
+    def category_page(self):
+        """
+        Dá um prompt para o usuário escolher uma categoria de catálogo para ser impresso.
+        """
+        while True:
+            self.clear_screen()
+            print("Choose a category to browse on or type 'exit' to cancel.")
+
+            opt = str(input("'Movies', 'Shows' or 'All'\n").lower())
+
+            if opt == "exit":
+                break
+
+            elif opt in categories_list or opt == "all":
+                self.choice_catalog(opt, genres_list)
+
+            else:
+                input("This category is not availabe, press enter to try again")
 
 class User_Account:
     """
@@ -114,7 +188,7 @@ class User_Account:
     :var list profile_list: Lista de perfis criados.
     :var `Profile` choosen_profile: Perfil escolhido.
     """
-    def __init__(self,email:str,password:str,payment_plan:int):
+    def __init__(self, email:str, password:str, payment_plan:int):
         self.email = email
         self.password = password
         self.payment_plan = payment_plan
@@ -125,6 +199,8 @@ class User_Account:
     def profile_choice(self, option:str):
         """
         Printa os perfis criados, os enumera para a escolha e retorna a escolha do usuário.
+
+        :param str option: Opção escolhida pelo usuário, pode ser "use" ou "delete".
         """
         for i in range(len(self.profile_list)):
             print(f"{i} - {self.profile_list[i].first_name} {self.profile_list[i].last_name}")
@@ -366,7 +442,7 @@ class Catalog:
         """
         Imprime o catálogo usando o(s) genêro(s) como parâmetro.
 
-        :param genres: Lista ou string (rever isso daí) de genêros escolhidos.
+        :param genres: Lista ou string (rever isso aqui) de genêros escolhidos.
         :param int i: Iterador para a escolha do item.
         :param int list items: Lista de :obj:`Watchable` a serem salvos para a escolha.
         
@@ -431,7 +507,7 @@ class Watchable(Item):
         
         profile.watch_history.append(self)
 
-        print("\n")
+        main.clear_screen()
         ads.show_random_ad()
         input(f"You've just watched {self.name} in {profile.bandwidth} quality. Press enter to continue")
     
@@ -453,13 +529,13 @@ class Watchable(Item):
 
         for reviwer in reviews_dict:
             if reviews_dict[reviwer]['review'] != "":
-                print(f"{reviwer} : {reviews_dict[reviwer]['review']}")
+                print(f"{reviwer} : '{reviews_dict[reviwer]['review']}'")
                 reviews_total += 1
             scores_sum += reviews_dict[reviwer]['score']
             scores_total += 1
         
         if scores_total != 0:
-            print(f"The current score is: {scores_sum / scores_total}")
+            print(f"The current score is: {(scores_sum / scores_total):.2f}")
         else:
             print("There is no score at the moment.")
         
@@ -501,11 +577,14 @@ class Watchable(Item):
                 main.logged_user.profile_choosen.bandwidth_settings()
             elif opt == 4:
                 while True: #Escolha se o usuário vai ver ou fazer uma review.
+                    main.clear_screen()
                     user_choice = int(input("Would you like to:\n1 - Leave a review 2 - See the current score and reviews 3 - Exit\n"))
                     if user_choice == 1:
                         self.review_page()
                     elif user_choice == 2:
                         self.print_reviews()
+                    elif user_choice == 3:
+                        break
             else:
                 break
 
