@@ -1,68 +1,9 @@
 from classes import *
 
-# ----
-
-def choice_catalog(category, genres):
-    main.clear_screen()
-    i = 0
-    items = []
-    if category == "movies" or category == "all":
-        i = movie_catalog.show_catalog(genres, 1, items)
-    
-    ads.show_random_ad()
-
-    if category == "shows" or category == "all":
-        i += shows_catalog.show_catalog(genres, i, items)
-
-    ads.show_random_ad()
-    
-    opt = int(input(f"\nEnter the number of wich item you want to watch (or enter '0' to exit).\n"))
-    if opt == 0:
-        return
-    else:
-        items[opt - 1].show_details()
-
-def recommendations_page():
-    profile = main.logged_user.profile_choosen
-
-    genres = profile.genre_preference
-    categories = profile.category_preference
-
-    choice_catalog(categories, genres)
-
-def category_page():
-    while True:
-        main.clear_screen()
-        print("Choose a category to browse on or type 'exit' to cancel.")
-
-        opt = str(input("'Movies', 'Shows' or 'All'\n").lower())
-
-        if opt == "exit":
-            break
-
-        elif opt in categories_list or opt == "all":
-            choice_catalog(opt, genres_list)
-
-        else:
-            input("This category is not availabe, press enter to try again")
-
-def genre_page():
-    while True:
-        main.clear_screen()
-        print("Enter the genre to browse on or type 'exit' to cancel.")
-
-        for i in range(len(genres_list)):
-            print(f"{genres_list[i].title()} | ", end='')
-
-        opt = str(input("\n").lower())
-        if opt == "exit":
-            break
-        elif opt in genres_list:
-            choice_catalog("all", opt)
-        else:
-            input("This genre is not availabe, press enter to try again")
-    
 def login_menu():
+    """
+    Primeiro menu do programa. O usuário pode logar ou criar uma conta aqui.
+    """
     while True:
         main.clear_screen()
         opt = 0
@@ -78,6 +19,9 @@ def login_menu():
             break
 
 def initial_menu():
+    """
+    Segundo menu do programa. Aqui o usuário pode criar, escolher ou deletar um perfil e configurar sua conta.
+    """
     user = main.logged_user
     while True:
         if len(user.profile_list) == 0: #Inicio do programa, nenhum perfil criado
@@ -104,24 +48,27 @@ def initial_menu():
                     break
 
 def main_menu():
+    """
+    Terceiro menu do programa. Aqui pode ser escolhido como o usuário ira ver o(s) catálogo(s).
+    """
     while True:
         profile = main.logged_user.profile_choosen
+
         main.clear_screen()
         print(f"Hello, {profile.first_name}, what will you watch today?")
         opt = int(input("Browse by:\n1 - Recommendations based on your preferences 2 - Category 3 - Genre 4 - Bookmarks 5 - Watch History 6 - Exit\n"))
 
         if opt == 1:
-            recommendations_page()
+            main.recommendations_page()
         elif opt == 2:
-            category_page()
+            main.category_page()
         elif opt == 3:
-            genre_page()
+            main.genre_page()
         elif opt == 4:
             profile.bookmarks_or_watch_history_page("bookmarks")
         elif opt == 5:
             profile.bookmarks_or_watch_history_page("history")
         elif opt == 6:
             break
-
 
 login_menu()
