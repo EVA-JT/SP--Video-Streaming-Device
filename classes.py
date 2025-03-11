@@ -533,14 +533,18 @@ class Watchable(Item):
                 reviews_total += 1
             scores_sum += reviews_dict[reviwer]['score']
             scores_total += 1
+
+        if reviews_total == 0:
+            print("There are no reviews at the moment")
         
         if scores_total != 0:
             print(f"The current score is: {(scores_sum / scores_total):.2f}")
         else:
             print("There is no score at the moment.")
+
+        input("Press enter to exit.")
+
         
-        if reviews_total == 0:
-            print("There are no reviews at the moment")
 
     def review_page(self):
         """
