@@ -1,3 +1,5 @@
+user_data = {}
+
 quality_list = ["low", "medium", "high"]
 
 genres_list = ["action", "comedy", "romance"]
