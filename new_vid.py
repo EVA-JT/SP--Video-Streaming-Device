@@ -48,7 +48,7 @@ def initial_menu():
             elif option == 3:
                 user.delete_user_profile()
             elif option == 4:
-                res = main.user_management
+                res = main.user_management()
                 if res == 0:
                     return               
             elif option == 5:
