@@ -58,7 +58,7 @@ class Program:
         if email in user_data:
             user = user_data[email]
 
-            if password == user.password:
+            if password == user._password:
                 self.logged_user = user
                 success = True
 
@@ -77,7 +77,7 @@ class Program:
 
         while True:
             self.clear_screen()
-            print(f"Hello user {self.logged_user.email} what would you like to change in your account?")
+            print(f"Hello user {self.logged_user._email} what would you like to change in your account?")
             opt = 0
 
             while opt not in range(1,6):
@@ -201,8 +201,8 @@ class User_Account:
     :var `Profile` choosen_profile: Perfil escolhido.
     """
     def __init__(self, email:str, password:str, payment_plan:int):
-        self.email = email
-        self.password = password
+        self._email = email
+        self._password = password
         self.payment_plan = payment_plan
 
         self.profile_list = []
@@ -327,9 +327,9 @@ class User_Account:
             elif new_email == "out":
                 break
             else:
-                assurance = str(input(f"Are you sure you want to change {self.email} to {new_email}? Y/N\n").lower())
+                assurance = str(input(f"Are you sure you want to change {self._email} to {new_email}? Y/N\n").lower())
                 if assurance == "y":
-                    user_data[new_email] = user_data.pop(self.email)
+                    user_data[new_email] = user_data.pop(self._email)
                     self.email = new_email
                     input("New email successfully registered. Press enter to exit")
                     break
@@ -347,7 +347,7 @@ class User_Account:
             if password != rpt_password:
                 input("The two passwords are not the same, press enter to try again")
             else:
-                self.password = password
+                self._password = password
                 input("Password changed successfully. Press enter to exit")
                 break
 
