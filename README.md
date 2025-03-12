@@ -1,3 +1,36 @@
+# 14. Video Streaming Service
+
+### • Content Library Management: 
+Implementada, mostrando o catalógo de filmes e séries com apenas 3 generos no momento.
+
+### • User Subscription Management:
+Implementada, é possivel criar, logar e excluir uma conta inscrita, podendo alterar as informações dela também. É possivel gerenciar o plano de pagamento porém de maneira simples e toda conta está no teste gratuito automaticamente.;
+
+### • User Profile Management:
+Implementada, é possivel criar, usar e excluir um perfil. As informações armazenadas são apenas o nome, sobrenome e idade.
+
+### • Bookmarking and Watch History:
+Implementada, ao "assistir" algo ou salva-lo o objeto do item fica salvo no perfil escolhido pelo usuario e pode ser visto em suas respectivas páginas no menu principal.
+
+### • Personalized Recommendations:
+Implementada, na criação de perfil o usuario pode escolher qual categoria e genero(s) são seus preferidos e no menu principal, ao escolher a página de recomendações, itens são impressos baseado nas escolhas feitas na criação. TO DO: Permitir certa modificação das opções, sendo baseadas no histórico ou sendo modificadas nas configurações.;
+
+### • Bandwidth Optimization:
+Implementada, ao assistir algo pela primeira vez em um perfil, o usuario pode escolher com que qualidade assistir-lo, podendo escolher entre low, medium e high. Essa escolha pode ser configurada na página de detalhes do item. O programa sempre recomendará high para o usuario.
+
+### • Content Rating and Reviews:
+Implementada, os usuarios podem ver e deixar uma review. Essas informações ficarão salvas nas informações do filme.
+
+### • Ad Integration and Management:
+Implementada, ads aparecem no catálogo e após assistir algum item.
+
+### • Parental Control Settings:
+Implementada, ao criar um perfil e digitar a idade o usuario pod escolher ligar o controle parental, se ligado o catálogo é filtrado a partir da idade do perfil.;
+
+### • Multi-Device Streaming:
+A ser implementada posteriormente, por não ser possivel de se fazer no terminal.;
+
+
 # Classes:
 
 # 1 - Program
