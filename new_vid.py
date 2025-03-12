@@ -8,7 +8,10 @@ def login_menu():
         main.clear_screen()
         opt = 0
         while opt not in range(1, 4):
-            opt = int(input("Welcome to [site name], would you like to:\n1 - Log in 2 - Create an account 3 - Log out\n"))
+            try:
+                opt = int(input("Welcome to [site name], would you like to:\n1 - Log in 2 - Create an account 3 - Log out\n"))
+            except ValueError:
+                print("Enter only numbers.")
 
         if opt == 1:
             if main.user_login():
@@ -28,8 +31,14 @@ def initial_menu():
             user.create_user_profile()
         else:
             main.clear_screen()
+            option = 0
             print("Hello, would you like to access a profile or create a new one?")
-            option = int(input("1 - Access a profile 2 - Create a new one 3 - Delete a profile 4 - Account settings 5 - Exit\n"))
+
+            while option not in range(1, 6):
+                try:
+                    option = int(input("1 - Access a profile 2 - Create a new one 3 - Delete a profile 4 - Account settings 5 - Exit\n"))
+                except ValueError:
+                    print("Enter only numbers.")
 
             if option == 1:
                 user.choose_user_profile()
@@ -56,7 +65,13 @@ def main_menu():
 
         main.clear_screen()
         print(f"Hello, {profile.first_name}, what will you watch today?")
-        opt = int(input("Browse by:\n1 - Recommendations based on your preferences 2 - Category 3 - Genre 4 - Bookmarks 5 - Watch History 6 - Exit\n"))
+        opt = 0
+
+        while opt not in range(1, 7):
+            try:
+                opt = int(input("Browse by:\n1 - Recommendations based on your preferences 2 - Category 3 - Genre 4 - Bookmarks 5 - Watch History 6 - Exit\n"))
+            except ValueError:
+                print("Enter only numbers.")
 
         if opt == 1:
             main.recommendations_page()
