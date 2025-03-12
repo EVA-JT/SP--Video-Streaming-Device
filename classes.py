@@ -3,8 +3,6 @@ import platform
 import random
 from data import *
 
-user_data = {}
-
 class Program:
     """
     Classe principal do programa. Cuida do usuario logado.
@@ -41,7 +39,10 @@ class Program:
         payment_plan = 0
         print("After your 7-day free trial, what type of payment plan would you like?\n1 - Monthly 2 - Quartely 3 - Annual")
         while payment_plan not in range(1,4):
-            payment_plan = int(input())
+            try:
+                payment_plan = int(input())
+            except ValueError:
+                print("Enter only numbers.")
 
         user = User_Account(email, password, payment_plan)
         user_data[email] = user
@@ -80,7 +81,11 @@ class Program:
             opt = 0
 
             while opt not in range(1,6):
-                opt = int(input("1 - Change email 2 - Change password 3 - Change payment plan 4 - Delete account 5 - Exit menu"))
+                try:
+                    opt = int(input("1 - Change email 2 - Change password 3 - Change payment plan 4 - Delete account 5 - Exit menu"))
+                except ValueError:
+                    print("Enter only numbers.")
+
             if opt == 1:
                 self.logged_user.change_email()
 
@@ -111,19 +116,26 @@ class Program:
         :param genre: Lista ou string (rever isso aqui) de genêros escolhidos.
         """
         self.clear_screen()
+
         i = 0
         items = []
         if category == "movies" or category == "all":
             i = movie_catalog.show_catalog(genres, 1, items)
-    
-        ads.show_random_ad()
+            ads.show_random_ad()
 
         if category == "shows" or category == "all":
             i += shows_catalog.show_catalog(genres, i, items)
+            ads.show_random_ad()
 
-        ads.show_random_ad()
-    
-        opt = int(input(f"\nEnter the number of wich item you want to watch (or enter '0' to exit).\n"))
+        opt = 0
+        while True:
+            try:
+                opt = int(input(f"\nEnter the number of which item you want to watch (or enter '0' to exit).\n"))
+                if opt in range(0, len(items)):
+                    break
+            except ValueError:
+                print("Enter only numbers.")
+
         if opt == 0:
             return
         else:
@@ -150,7 +162,7 @@ class Program:
     
     def recommendations_page(self):
         """
-        Usa as informações do perfil escolhido para imprimir o(s) catálogo(s) seguindo elas e usando :meth:`choice_catalog()`.
+        Usa as informações do perfil escolhido para imprimir o(s) catálogo(s) usando :meth:`choice_catalog()`.
         """
         profile = self.logged_user.profile_choosen
 
@@ -205,10 +217,14 @@ class User_Account:
         for i in range(len(self.profile_list)):
             print(f"{i} - {self.profile_list[i].first_name} {self.profile_list[i].last_name}")
 
+        user_choice = 0
         while True:
-            user_choice = int(input(f"Enter which profile you would like to {option}: "))
-            if user_choice in range(0, (len(self.profile_list))):
-                break  
+            try:
+                user_choice = int(input(f"Enter which profile you would like to {option}: "))
+                if user_choice in range(0, (len(self.profile_list))):
+                    break  
+            except ValueError:
+                print("Enter only numbers.")
         return user_choice
 
     def choose_user_profile(self):
@@ -243,7 +259,12 @@ class User_Account:
         print("Create a profile!")
         first_name = str(input("First name: "))
         last_name = str(input("Last name: "))
-        age = int(input("Your age: "))
+        while True:
+            try:
+                age = int(input("Your age: "))
+                break
+            except ValueError:
+                print("Enter only numbers.")
         parental_controls = False
 
         #Prompt do controle parental
@@ -262,19 +283,16 @@ class User_Account:
             category_preference = str(input("Do you prefer: movies, shows or both? ").lower())
 
             if category_preference == "movies" or category_preference == "shows":
-                category_preference = category_preference[:-1] # remove a ultima letra 's'
                 break
-
             elif category_preference == "both":
                 category_preference = "all"
                 break
-
             else:
                 input("Category not available. Press enter to try again")
 
         g_l = genres_list.copy() #copia a lista de generos para g_l
         genre_preference = []
-        while (len(g_l) >= 1):
+        while (len(g_l) >= 1): #percorre a lista de generos
             print("Enter your favorite genres or 'cancel' to exit.")
             for genre in g_l:
                 print(f"{genre.title()} | ", end='')
@@ -290,6 +308,9 @@ class User_Account:
 
         if not genre_preference: #se a lista estiver vazia então os generos favoritos serão todos (genres_list)
             genre_preference = genres_list.copy()
+
+        if isinstance(genre_preference, str): #se 'genre' for uma string, transforma ela em uma lista
+            genre_preference = [genre_preference]
         
         profile = Profile(first_name, last_name, age, category_preference, genre_preference, parental_controls)
         self.profile_list.append(profile)
@@ -337,7 +358,10 @@ class User_Account:
         print("There are still 7 days until the next billing.")
         opt = 0
         while opt not in range(1, 5):
-            opt = int(input("What type of payment plan would you like?\n1 - Monthly 2 - Quartely 3 - Annual 4 - Cancel\n"))
+            try:
+                opt = int(input("What type of payment plan would you like?\n1 - Monthly 2 - Quartely 3 - Annual 4 - Cancel\n"))
+            except ValueError:
+                print("Enter only numbers.")
         if opt == 4:
             return
         else:
@@ -380,7 +404,7 @@ class Profile:
             print(f"Your current choosen quality is: {self.bandwidth}")
         
         while True:
-            b_w = input("In what quality do you want to watch, 'Low', 'Medium' or 'High'? (We recommend 'High' for your bandwidth)\nType 'exit' to cancel.\n").lower()
+            b_w = str(input("In what quality do you want to watch, 'Low', 'Medium' or 'High'? (We recommend 'High' for your bandwidth)\nType 'exit' to cancel.\n").lower())
 
             if b_w == "exit":
                 break
@@ -414,12 +438,18 @@ class Profile:
                 i += 1
 
             while True:
-                opt = int(input("Enter wich item you want to watch (enter 0 to exit): "))
-                if opt in range(0, i):
-                    if opt != 0:
-                        bm_list[opt - 1].show_details()
-                    break
+                try:
+                    opt = int(input("Enter wich item you want to watch (enter 0 to exit): "))
+                    if opt in range(0, i):
+                        if opt != 0:
+                            bm_list[opt - 1].show_details()
+                        break
+                except ValueError:
+                    print("Enter only numbers.")
 
+    def preference_settings(self): #WIP
+        print(f"Your category preference is:{self.category_preference}")
+        print(f"Your genre preference is: {self.genre_preference}")
 class Catalog:
     """
     Classe de catálogo, armazena os itens de maneira similar a como eles estão em data.py.
@@ -449,8 +479,6 @@ class Catalog:
         :return: Retorna o iterador :var:`i`
         """
         profile = main.logged_user.profile_choosen
-        if isinstance(genres, str): #se 'genre' for uma string, transforma ela em uma lista
-            genres = [genres]
         
         print(f"\n\t\t\t{self.catalog_name.title()}")
 
@@ -497,7 +525,7 @@ class Watchable(Item):
         profile = main.logged_user.profile_choosen
         if profile.bandwidth == "":
             while True:
-                b_w = input("In what quality do you want to watch, 'Low', 'Medium' or 'High'? (We recommend 'High' for your bandwidth)\n").lower()
+                b_w = str(input("In what quality do you want to watch, 'Low', 'Medium' or 'High'? (We recommend 'High' for your bandwidth)\n").lower())
 
                 if b_w in quality_list:
                     profile.bandwidth = b_w
@@ -552,7 +580,18 @@ class Watchable(Item):
         """
         reviews_dict = self.reviews
 
-        score = int(input(f"What would you rate {self.name} out of 10?\n"))
+        while True:
+            try:
+                score = int(input(f"What would you rate {self.name} out of 10?\n"))
+                if score < 0:
+                    score = 0
+                elif score > 10:
+                    score = 10
+                break
+            except ValueError:
+                print("Enter only numbers.")
+            
+        
         review = str(input("Write your review: "))
 
         reviews_dict[main.logged_user.profile_choosen.first_name] = {
@@ -571,7 +610,13 @@ class Watchable(Item):
             rating = rating_list[self.rating]
 
             print(f"Title: {self.name}\nSinopsis: {self.description}\nYear: {self.year}\nRating: {rating}\n")
-            opt = int(input("1 - Watch 2 - Bookmark it 3 - Bandwidth settings 4 - Reviews 5 - Exit\n"))
+            while True:
+                try:
+                    opt = int(input("1 - Watch 2 - Bookmark it 3 - Bandwidth settings 4 - Reviews 5 - Exit\n"))
+                    if opt in range(1, 6):
+                        break
+                except ValueError:
+                    print("Enter only numbers")
 
             if opt == 1:
                 self.watch()
@@ -582,13 +627,16 @@ class Watchable(Item):
             elif opt == 4:
                 while True: #Escolha se o usuário vai ver ou fazer uma review.
                     main.clear_screen()
-                    user_choice = int(input("Would you like to:\n1 - Leave a review 2 - See the current score and reviews 3 - Exit\n"))
-                    if user_choice == 1:
-                        self.review_page()
-                    elif user_choice == 2:
-                        self.print_reviews()
-                    elif user_choice == 3:
-                        break
+                    try:
+                        user_choice = int(input("Would you like to:\n1 - Leave a review 2 - See the current score and reviews 3 - Exit\n"))
+                        if user_choice == 1:
+                            self.review_page()
+                        elif user_choice == 2:
+                            self.print_reviews()
+                        elif user_choice == 3:
+                            break
+                    except ValueError:
+                        print("Enter only numbers.")
             else:
                 break
 
